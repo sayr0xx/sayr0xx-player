@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#090610">
+  <title>sayr0xx player</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{color-scheme:dark;--bg:#090610;--panel:#151020;--panel2:#211631;--purple:#a855f7;--pink:#d946ef;--muted:#a99bb9;--white:#f8f3ff}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(ellipse at 50% -15%,#422064 0%,#160d23 36%,var(--bg) 72%);color:var(--white);font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+    .app{max-width:520px;margin:auto;padding:22px 17px 34px}
+    header{display:flex;align-items:center;gap:12px;margin:8px 0 26px}
+    .logo{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#c026d3,#6d28d9);display:grid;place-items:center;box-shadow:0 0 28px #a855f766}
+    .logo svg{width:30px;height:30px}
+    h1{font-size:20px;letter-spacing:.4px;margin:0;font-weight:850}
+    .sub{font-size:11px;color:#c8a8e8;letter-spacing:2px;margin-top:3px}
+    .tag{margin-left:auto;font-size:10px;color:#d8b4fe;border:1px solid #8546b8;border-radius:99px;padding:5px 9px}
+    .hero{padding:23px 19px;border:1px solid #7540a055;border-radius:24px;background:linear-gradient(135deg,#271638dd,#130d1fee);box-shadow:0 15px 45px #0006;overflow:hidden;position:relative}
+    .hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-65px;top:-65px;background:#a855f722;filter:blur(12px)}
+    .eyebrow{font-size:11px;letter-spacing:2px;color:#d8b4fe;text-transform:uppercase}
+    h2{font-size:27px;line-height:1.1;margin:9px 0 8px;max-width:270px}
+    .hint{color:var(--muted);font-size:13px;margin:0 0 19px}
+    .search{display:flex;gap:8px;background:#0d0914;border:1px solid #69418a;border-radius:15px;padding:7px;position:relative;z-index:1}
+    input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;padding:9px;font-size:14px}
+    input::placeholder{color:#82748f}
+    button{border:0;color:white;font-weight:700;cursor:pointer}
+    .go{background:linear-gradient(135deg,#a855f7,#7c3aed);border-radius:11px;padding:0 16px;box-shadow:0 4px 18px #9333ea55}
+    .section-title{font-size:14px;font-weight:750;margin:24px 2px 12px}
+    .modes{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .mode{background:linear-gradient(145deg,#21172e,#15101e);border:1px solid #4a315e;border-radius:17px;padding:15px;text-align:left;min-height:86px}
+    .mode:active,.mode.selected{border-color:#c084fc;background:#2a1940}
+    .ico{font-size:21px;display:block;margin-bottom:7px}
+    .mode strong{font-size:13px}
+    .mode small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+    .player{margin-top:23px;padding:16px;border:1px solid #54346e;border-radius:20px;background:linear-gradient(135deg,#21152f,#120d1a)}
+    .player-top{display:flex;align-items:center;gap:12px}
+    .cover{width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#6d28d9,#d946ef);display:grid;place-items:center;box-shadow:0 0 25px #9333ea55}
+    .cover svg{width:30px}
+    .track{font-weight:750;font-size:13px}
+    .artist{font-size:11px;color:var(--muted);margin-top:4px}
+    .playrow{display:flex;align-items:center;justify-content:center;gap:24px;margin:18px 0 9px}
+    .playrow button{background:transparent;font-size:21px;color:#e9d5ff}
+    .playrow .play{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#c026d3,#7c3aed);font-size:18px;box-shadow:0 0 22px #9333ea66}
+    .notice{margin-top:16px;color:#a99bb9;font-size:11px;line-height:1.5;text-align:center}
+    .toast{display:none;margin-top:12px;padding:11px 13px;border-radius:12px;background:#2a1940;border:1px solid #8b5cf6;color:#eadcff;font-size:12px}
+    footer{text-align:center;color:#776b83;font-size:10px;margin-top:23px;letter-spacing:1px}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M3 17h4l3-8 5 16 5-20 4 12h5" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div><h1>sayr0xx player</h1><div class="sub">YOUR MUSIC SPACE</div></div>
+      <span class="tag">BETA</span>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">музыка рядом</div>
+      <h2>Найди свой звук.</h2>
+      <p class="hint">Ищи треки по названию, артисту или ссылке</p>
+      <form class="search" id="searchForm">
+        <input id="query" autocomplete="off" placeholder="Название песни или артист…" aria-label="Поиск музыки">
+        <button class="go" type="submit">Найти</button>
+      </form>
+    </section>
+
+    <div class="section-title">Как будем искать?</div>
+    <section class="modes">
+      <button class="mode" data-mode="text"><span class="ico">🎵</span><strong>По названию</strong><small>Песня или слова</small></button>
+      <button class="mode" data-mode="artist"><span class="ico">🎤</span><strong>По артисту</strong><small>Исполнитель и группа</small></button>
+      <button class="mode" data-mode="link"><span class="ico">🔗</span><strong>По ссылке</strong><small>Ссылка на видео или трек</small></button>
+      <button class="mode" data-mode="sound"><span class="ico">〰️</span><strong>По звуку</strong><small>Распознавание фрагмента</small></button>
+    </section>
+
+    <section class="player">
+      <div class="player-top">
+        <div class="cover"><svg viewBox="0 0 32 32" fill="none"><path d="M3 17h4l3-8 5 16 5-20 4 12h5" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="track" id="trackTitle">Твой следующий трек</div><div class="artist" id="trackArtist">Найди музыку, чтобы начать</div></div>
+      </div>
+      <div class="playrow">
+        <button aria-label="Предыдущий трек">⏮</button>
+        <button class="play" id="playBtn" aria-label="Воспроизвести">▶</button>
+        <button aria-label="Следующий трек">⏭</button>
+      </div>
+      <div class="artist" style="text-align:center">Плеер подключится после настройки музыкального API</div>
+    </section>
+
+    <div class="toast" id="toast"></div>
+    <p class="notice">Это интерфейс Mini App. Чтобы поиск и воспроизведение реально работали, боту нужен обработчик запросов и источник аудио.</p>
+    <footer>SAYR0XX • MUSIC MINI APP</footer>
+  </main>
+<script>
+(() => {
+  const tg = window.Telegram?.WebApp;
+  if (tg) { tg.ready(); tg.expand(); }
+  let mode = "text";
+  const toast = document.getElementById("toast");
+  const show = (msg) => { toast.textContent = msg; toast.style.display = "block"; };
+  document.querySelectorAll(".mode").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode").forEach(x => x.classList.remove("selected"));
+    btn.classList.add("selected"); mode = btn.dataset.mode;
+    const input = document.getElementById("query");
+    const prompts = {text:"Название песни или слова…",artist:"Имя исполнителя…",link:"Вставь ссылку на видео или трек…",sound:"Распознавание звука нужно подключить к серверу"};
+    input.placeholder = prompts[mode];
+    if(mode === "sound") show("Для поиска по звуку нужно подключить обработчик аудио на стороне бота.");
+    else toast.style.display = "none";
+    if(mode !== "sound") input.focus();
+  }));
+  document.getElementById("searchForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const q = document.getElementById("query").value.trim();
+    if(!q) { show("Сначала введи название, артиста или ссылку."); return; }
+    if(tg && tg.sendData) {
+      tg.sendData(JSON.stringify({action:"music_search", mode, query:q}));
+      show("Запрос отправлен боту. Для получения результата бот должен поддерживать Mini App.");
+    } else {
+      show("Открой страницу через Telegram Mini App. Сейчас это предварительный просмотр.");
+    }
+  });
+  document.getElementById("playBtn").addEventListener("click", () => show("Воспроизведение появится после подключения аудиопотока."));
+})();
+</script>
+</body>
+</html>
